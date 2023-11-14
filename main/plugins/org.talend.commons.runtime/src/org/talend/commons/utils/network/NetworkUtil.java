@@ -79,6 +79,8 @@ public class NetworkUtil {
 
     private static final String PROP_NETWORK_STATUS = "network.status"; //$NON-NLS-1$
 
+    private static final String SYSTEM_PROXY_ENABLED = "talend.studio.proxy.enableSystemProxyByDefault";
+
     public static void applyProxyFromSystemProperties() throws Exception {
         if (!Boolean.valueOf(System.getProperty("talend.studio.proxy.applySystemProps", Boolean.FALSE.toString()))) {
             return;
@@ -108,7 +110,8 @@ public class NetworkUtil {
         boolean isHttpsProxyEnabled = StringUtils.isNotBlank(httpsProxyHost) && StringUtils.isNotBlank(httpsProxyPort);
         boolean isSocksProxyEnabled = StringUtils.isNotBlank(socksProxyHost) && StringUtils.isNotBlank(socksProxyPort);
         if (!isHttpProxyEnabled && !isHttpsProxyEnabled && !isSocksProxyEnabled) {
-            proxyService.setSystemProxiesEnabled(true);
+            proxyService
+                    .setSystemProxiesEnabled(Boolean.valueOf(System.getProperty(SYSTEM_PROXY_ENABLED, Boolean.TRUE.toString())));
             proxyService.setProxiesEnabled(false);
             LOGGER.info("No proxy specified, disabled.");
         } else {
