@@ -178,7 +178,7 @@ public abstract class CheckLastVersionRepositoryWizard extends RepositoryWizard 
     }
 
 
-    protected void updateDQDependency(boolean isModified) {
+    protected void updateDQDependency(boolean isModified, String originaleObjectLabel) {
         if (isModified) {
             if (GlobalServiceRegister.getDefault().isServiceRegistered(ITDQRepositoryService.class)) {
                 ITDQRepositoryService tdqRepService = GlobalServiceRegister.getDefault()
@@ -190,7 +190,19 @@ public abstract class CheckLastVersionRepositoryWizard extends RepositoryWizard 
                     // TDQ-7438, If the analysis editor is opened, popup the dialog which ask user refresh
                     // the editor or not once should enough(use hasReloaded to control,because the reload will refresh)
                     tdqRepService.refreshCurrentAnalysisEditor(connectionItem);
+
+                    tdqRepService.updateAliasInSQLExplorer(connectionItem, originaleObjectLabel);
                 }
+            }
+        }
+    }
+
+    protected void notifyDQSQLExplorer() {
+        if (GlobalServiceRegister.getDefault().isServiceRegistered(ITDQRepositoryService.class)) {
+            ITDQRepositoryService tdqRepService = GlobalServiceRegister.getDefault()
+                    .getService(ITDQRepositoryService.class);
+            if (tdqRepService != null) {
+                tdqRepService.notifySQLExplorer(connectionItem);
             }
         }
     }
